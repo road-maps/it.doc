@@ -1,0 +1,27 @@
+npm config set prefix "E:\Program Files\nodejs\node_global"
+
+1) Install bootstrap using npm
+
+npm install bootstrap --save
+after the installation of Bootstrap 4, we Need two More javascript Package that is Jquery and Popper.js without these two package bootstrap is not complete because Bootstrap 4 is using Jquery and popper.js package so we have to install as well
+
+2) Install JQUERY
+
+npm install jquery --save
+3) Install Popper.js
+
+npm install popper.js --save
+Now Bootstrap is Install on you Project Directory inside node_modules Folder
+
+open .angular-cli.json this file are available on you angular directory open that file and add the path of bootstrap, jquery, and popper.js files inside styles[] and scripts[] path see the below example
+
+"styles": [   
+    "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+    "styles.css"
+  ],
+  "scripts": [  
+    "../node_modules/jquery/dist/jquery.min.js",
+    "../node_modules/popper.js/dist/umd/popper.min.js",
+    "../node_modules/bootstrap/dist/js/bootstrap.min.js"
+  ],
+Note: Don't change a sequence of js file it should be like this
