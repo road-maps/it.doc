@@ -1,0 +1,34 @@
+docker run   -d -P -p 50070:50070 -p 8088:8088 -p 8080:8900 --name master -h master --add-host slave01:172.18.0.3 --add-host slave02:172.18.0.4 hadoop
+
+docker run   -d -P --name slave01 -h slave01 --add-host master:172.18.0.2 --add-host slave02:172.18.0.4 hadoop
+
+#清理不在运行的容器
+docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs docker rm
+
+#创建master容器，50070和8088，8080是用来在浏览器中访问hadoop yarn spark #WEB界面，这里分别映射到物理机的50070和8088，8900端口。
+
+#重点注意：容器启动后，映射比较麻烦，最好在这里映射。
+docker run   -d -P -p 50070:50070 -p 8088:8088 -p 8900:8080 --name master -h master --net mynetwork  --ip 172.18.0.2 --add-host slave01:172.18.0.3 --add-host slave02:172.18.0.4 hadoop
+
+#创建slave01容器,在容器host文件，添加hostname，并配置其他节点主机名称和IP地址
+docker run   -d -P --name slave01 -h slave01  --net mynetwork  --ip=172.18.0.3 --add-host master:172.18.0.2 --add-host slave02:172.18.0.4  hadoop
+
+#创建slave02容器
+docker run   -d -P --name slave02 -h slave02  --net mynetwork  --ip 172.18.0.4 --add-host master:172.18.0.2 --add-host slave01:172.18.0.3  hadoop
+
+
+docker run -itd --name hadoop0 --hostname hadoop0 --net mynetwork  --ip 192.168.10.30 --add-host hadoop1:192.168.10.31 --add-host hadoop2:192.168.10.32  -d -P -p 50070:50070 -p 8088:8088 hadoop:master
+
+#镜像迁移
+docker save hadoop | bzip2 | ssh root@192.168.0.101 "cat | docker load"
+
+#端口映射
+iptables -t nat -A DOCKER ! -i docker0 -p tcp -m tcp --dport 8082 -j DNAT --to-destination 172.17.0.5:80
+iptables -t nat -A DOCKER ! -i br-a8d74c267d2b -p tcp -m tcp --dport 8900 -j DNAT --to-destination 172.18.0.2:8080
+iptables -t nat -A  DOCKER -p tcp --dport 8900 -j DNAT --to-destination 172.18.0.2:8080
+
+#通过容器提交镜像
+docker commit master master
+
+#指定IP运行容器，docker版本1.9以上
+docker run   -d -P -p 50070:50070 -p 8088:8088 -p 8900:8080 --name master -h master --net mynetwork  --ip 172.18.0.2 --add-host slave01:172.18.0.3 --add-host slave02:172.18.0.4 master
