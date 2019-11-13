@@ -1,0 +1,48 @@
+wget http://www.stunprotocol.org/stunserver-1.2.13.tgz
+   28  yum install -y wget
+   29  wget http://www.stunprotocol.org/stunserver-1.2.13.tgz
+   30  tar zxvf stunserver-1.2.13.tgz
+   31  cd stunserver
+   32  ll
+   33  make
+   34  yum install g++ make libboost-dev libssl-dev -y
+   35  make
+   36  yum install g++-y
+   37  yum install g++ -y
+   38  yum install gcc-c++ -y
+   39  make
+   40  yum install libboost-dev libssl-dev -y
+   41  yum install openssl-devel
+   42  yum install boost-devel -y
+   43  make
+   44  ./stunserver
+   45  ll
+   46  ./stuntestcode
+   47  sudo ./stunserver
+   48  sudo ./stunserver  &
+   49  ps -ef|grep stun
+   50  netstat -anp|grep stun
+   51  netstat -an|grep stun
+   52  netstat -ap|grep stun
+   53  top -c
+   54  top -Hp 1709
+   55  history
+
+   
+   ./stunclient 127.0.0.1 3478
+   36  vi test.sh
+   37  sh test
+   38  sh test.sh
+   39  vi test.sh
+   40  sh test.sh
+   41  ps -ef|grep stun
+   42  ps -ef|grep test
+   43  vi test.sh
+   44  sh test.sh
+
+   #! /bin/bash
+while true
+do
+    sleep 0.001
+    ./stunclient 127.0.0.1 3478
+done
